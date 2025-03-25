@@ -53,13 +53,14 @@ res = model.fit(x,y)
 
 modelFit = res
 
+
 #now we can make predictions using fitted model (based on your x's it will predict what y's you should get )
 
 #THIS IS THE IN-SAMPLE ACCURACY WHICH ISNT REALLY IMPORTANT
 
-pred = modelFit.predict(x)
+pred1 = modelFit.predict(x)
 print("\n\nIn-sample accuracy: %s%%\n\n" 
- % str(round(100*accuracy_score(y, pred), 2))) #the ys are then compared by the accuracy score against truth, and we see how often were right
+ % str(round(100*accuracy_score(y, pred1), 2))) #the ys are then compared by the accuracy score against truth, and we see how often were right
 
  #INSTEAD WE WWANT OUT OF SAMPLE ACCURACY
 
@@ -80,3 +81,45 @@ print("\n\nIn-sample accuracy: %s%%\n\n"
 #out of sample accuracy with testing data
 print("\n\nOut-of-sample accuracy: %s%%\n\n" 
 % str(round(100*accuracy_score(yt, pred_test), 2)))
+
+
+
+
+
+#I think now i need to implement the actual test data data_pred
+
+#apparently some of the columns in the test data set have nan values so i need to fiind and remove them?
+data_pred.isnull().sum() #this shows me which variables have nans and how many they have
+
+
+#it looks like all of the values for Meal in data_pred are Nan?? maybe i just need to remove them or somethin
+data_pred.replace('nan', np.nan) #this replace the nan with the np.nan(NaN)
+
+#this remove the NaN  data_pred.dropna() , #dont do this i dont think its working lol
+
+#print(data_pred.dropna() )
+
+#took all of thevalues in the meal call and made it empty, so no Nan
+#need to make sure that these are empty because utimately this what we are trying to predict
+#did they get a meal (1)
+#did they not get a meal (0)
+#based on what else they ordered 
+data_pred['meal'] = ''
+
+data_pred['meal'] = 0 #i just mad all the values in meal =0 because Idl it wasnt working with empty (said that the predictions had to atleast match the type of values)
+
+y2 = data_pred['meal'] #this meakes it so that the Depenedt variable (y) meal
+x2 = data_pred.drop(['meal', 'id', 'DateTime'], axis =1) #makes (x) the dependent variable everything but meal which is Y, also drops DateTime and Id because I dont think those are there to help predicy anything but just help find whatever
+
+#after checking again we can see that all of the Nans are gone
+data_pred.isnull().sum()
+
+pred_almost = modelFit.predict(x2)
+
+#now need to make sure that that values in pred are integers, when i chedked its saying that some of the numbers are being classfied as numpy.int64
+pred = [int(x) if isinstance(x, (str, np.int64, np.int32)) else x for x in pred_almost]
+#this helps to ensure that they are all integers 
+
+print("\n\nTest (pred) data accuracy: %s%%\n\n" 
+ % str(round(100*accuracy_score(y2, pred), 2))) #the ys are then compared by the accuracy score against truth, and we see how often were right
+
