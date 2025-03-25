@@ -51,11 +51,13 @@ model = DecisionTreeClassifier()
 #now fit the model
 res = model.fit(x,y)
 
+modelFit = res
+
 #now we can make predictions using fitted model (based on your x's it will predict what y's you should get )
 
 #THIS IS THE IN-SAMPLE ACCURACY WHICH ISNT REALLY IMPORTANT
 
-pred = res.predict(x)
+pred = modelFit.predict(x)
 print("\n\nIn-sample accuracy: %s%%\n\n" 
  % str(round(100*accuracy_score(y, pred), 2))) #the ys are then compared by the accuracy score against truth, and we see how often were right
 
@@ -68,8 +70,8 @@ print("\n\nIn-sample accuracy: %s%%\n\n"
 
 # we will reduce the model to just the generalizable characteritsitcs
 
-pred_train = res.predict(x)
-pred_test = res.predict(xt)
+pred_train = modelFit.predict(x)
+pred_test = modelFit.predict(xt)
 
 #in sample accuracey with training data
 print("\n\nIn-sample accuracy: %s%%\n\n" 
